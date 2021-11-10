@@ -1,0 +1,48 @@
+#1
+select country, count(distinct o.officeCode) as office, count(distinct employeeNumber) as employee from offices o
+join employees e on e.officeCode = o.officeCode
+group by country;
+
+#2
+select * from customers
+where contactFirstName like 'R%';
+
+#3 
+select status, count(*) from orders
+where status in ('Cancelled', 'On Hold') 
+and customerNumber in (select customerNumber from customers
+where country = 'USA')
+group by 1;
+
+select status, count(*) from orders o
+join customers c on  c.customerNumber = o.customerNumber
+where c.country = 'USA' and o.status in ('Cancelled', 'On Hold')
+group by o.status;
+
+#4
+select o.officeCode, count(*) as 고객수 from offices o
+join employees e on e.officeCode = o.officeCode
+join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+group by 1
+order by 2 desc
+limit 1;
+
+#5
+select customerName, amount from customers
+join payments on customers.customerNumber = payments.customerNumber
+where paymentDate like '2004-11%'
+order by amount desc
+limit 1;
+
+#6
+select max(shippedDate-orderDate) as 기간최대값, min(shippedDate-orderDate) as 기간최소값 from orders
+where orderDate and shippedDate like '2005-01%';
+
+#7
+select employeeNumber, lastName, firstName, email, customerName, amount from employees e
+join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+join payments p on p.customerNumber = c.customerNumber
+where p.paymentDate like '2004%'
+order by p.amount desc
+limit 1;
+
